@@ -33,6 +33,7 @@ public class temperature {
 	 //Return the average reading
 	 return sum / readingCount;
 	 }//hi
+   //hi back, this is roger 
 
 
 }
