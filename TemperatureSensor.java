@@ -6,7 +6,7 @@ public class temperature {
 
 		 //Connect to the arduino
 		// robot = new ArduinoUno();
-		 robot.setPort("/dev/tty.usbmodem1411");
+		 robot.setPort("COM3");
 		 robot.connect();
 
 		 //Get the average thermistor reading
@@ -33,7 +33,7 @@ public class temperature {
 	 //Return the average reading
 	 return sum / readingCount;
 	 }//hi
-   //hi back, this is roger 
+   //hi back, this is roger
 
 
 }
