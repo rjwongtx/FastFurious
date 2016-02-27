@@ -12,7 +12,7 @@ public class movement
     
     
     robot.moveServo(RXTXRobot.SERVO1, 180); //half power for 3 seconds to get an estimate on speeed
-    robot.moveServo(RXTXRobot.SERVO2, 180); 
+    //robot.moveServo(RXTXRobot.SERVO2, 180); 
     
     robot.close();
   }
