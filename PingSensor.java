@@ -3,7 +3,7 @@ import rxtxrobot.*;
 public class PingSensor
 {
 	static RXTXRobot robot = new ArduinoUno();
-	static int ping = 12;
+	static int ping = 7;
 
 	public static void main(String[] args)
 	{

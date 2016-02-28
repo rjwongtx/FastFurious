@@ -15,6 +15,8 @@ public class temperature {
 		 //Print the results
 		 System.out.println("The probe read the value: " + thermistorReading);
 		 System.out.println("In volts: " + (thermistorReading * (5.0/1023.0)));
+		 double temperature = (thermistorReading-809.05)/-8.5458;
+		 System.out.println("The temperature is: " + temperature);
 		 robot.close();
 		 }
 	public static int getThermistorReading() {
@@ -32,8 +34,7 @@ public class temperature {
 
 	 //Return the average reading
 	 return sum / readingCount;
-	 }//hi
-   //hi back, this is roger
+	 }
 
 
 }
