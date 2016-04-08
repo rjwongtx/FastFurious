@@ -29,7 +29,8 @@ public class Autonomy
   static int compass = 1; //1-North, 2-East, 3-South, 4-West
 
   int objective1Complete=0;
-  public static void main(String args[])
+  
+public static void main(String args[])
   {
 	robot.setPort("COM3");
 	robot.connect();
@@ -39,37 +40,37 @@ public class Autonomy
 	robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
 	  if(startArea==1)
 	  {
-	  	currentX=25.87;
-	  	currentY=529.25;
-	  	solarX=439.87;
-	  	solarY=529.25;
+	  	currentX=2;
+	  	currentY=30;
+	  	solarX=25;
+	  	solarY=29;
 	  	solarArea=2;
 	  	compass = 3;
 	  }
 	  else if(startArea==2)
 	  {
-	  	currentX=439.87;
-	  	currentY=529.25;
-	  	solarX=439.87;
-	  	solarY=36.5;
+	  	currentX=26;
+	  	currentY=30;
+	  	solarX=25;
+	  	solarY=3;
 	  	solarArea=4;
 	  	compass = 3;
 	  }
 	  else if(startArea==3)
 	  {
-	  	currentX=25.87;
-	  	currentY=36.5;
-	  	solarX=25.87;
-	  	solarY=29.25;
+	  	currentX=2;
+	  	currentY=2;
+	  	solarX=3;
+	  	solarY=3;
 	  	solarArea=1;
 	  	compass = 1;
 	  }
 	  else if(startArea==4)
 	  {
-	  	currentX=439.87;
-	  	currentY=36.5;
-	  	solarX=25.87;
-	  	solarY=36.25;
+	  	currentX=26;
+	  	currentY=2;
+	  	solarX=3;
+	  	solarY=29;
 	  	solarArea=3;
 	  	compass = 1;
 	  }
@@ -79,7 +80,8 @@ public class Autonomy
 	  	exit(0);
 	  }
   }
-  void turnRight()
+  
+void turnRight()
   {
 	  rightTurn90();
 
@@ -94,7 +96,7 @@ public class Autonomy
   		}
   }
 
-  void turnLeft()
+void turnLeft()
   {
 
 	  leftTurn90();
@@ -109,22 +111,24 @@ public class Autonomy
   			compass--;
   		}
   }
-  void move()
+  
+  
+void move()
   {
-
-
   	if(compass==2 || compass==4)
   	{
   		xPing;
-  		<move function using x>
+  		//move function using x
+		//if(currentX==13 || currentX==15)
+		//{ use command to realign itself with the wall }
 
   		if(compass==2)
   		{
-  			currentX += 17.25;
+  			currentX+=1;
   		}
   		else if(compass==4)
   		{
-  			currentX -=17.25;
+  			currentX-=1;
   		}
   		else
   		{
@@ -137,15 +141,17 @@ public class Autonomy
   	else if(compass==1 || compass==3)
   	{
   		yPing
-  		<move function using y>
+  		//move function using y
+		//if(currentY==15 || currentY==17)
+		//{ use command to realign itself with the wall }
 
   		if(compass==1)
   		{
-  			currentY+=18.25;
+  			currentY+=1;
   		}
   		else if(compass==3)
   		{
-  			currentY-=18.25;
+  			currentY-=1;
   		}
   		else
   		{
@@ -162,11 +168,11 @@ public class Autonomy
 
   }
 
-  void movement()
+void movement()
   {
-  <compare currentLocation y-axis with desiredLocation y-axis> // Y-axis check
+  //compare currentLocation y-axis with desiredLocation y-axis> // Y-axis check
 
-  if(currentY > (desiredY + 18.25))
+  if(currentY > desiredY)
   {
   	if(compass !=3)
   	{
@@ -175,7 +181,7 @@ public class Autonomy
   		  robot.runMotor(RXTXRobot.MOTOR2, 250, 0);
   		  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)<215)
   		  {}
-  		  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); //
+  		  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); 
   	}
   	else if(compass==3)
   	{
@@ -187,7 +193,7 @@ public class Autonomy
   		System.exit(0);
   	}
   }
-  else if(currentY < (desiredY - 18.25))
+  else if(currentY < desiredY)
   {
   	if(compass!=1)
   	{
@@ -196,7 +202,7 @@ public class Autonomy
 	  robot.runMotor(RXTXRobot.MOTOR2, 250, 0);
 	  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)<215)
 	  {}
-	  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
+	  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); 
   	}
   	else if(compass==1)
   	{
@@ -210,9 +216,9 @@ public class Autonomy
 
   }
 
-  else if(currentY < (desiredY + 18.25) && currentY > (desiredY - 18.25))
+  else if(currentY == desiredY)
   {
-  if(currentX > (desiredX + 17.25))
+  if(currentX > desiredX)
   	{
   		if(compass !=4)
   		{
@@ -233,7 +239,7 @@ public class Autonomy
   			System.exit(0);
   		}
   	}
-  	else if(currentX < (desiredX - 17.25))
+  	else if(currentX < desiredX)
   	{
   		if(compass!=2)
   		{
@@ -256,17 +262,19 @@ public class Autonomy
   	}
   	else
   	{
-  		<currentLocation = desiredLocation>
+  		//currentLocation = desiredLocation
   		return;
   	}
   }
  }
-  void xPing()
+ 
+ 
+void xPing()
   {
 	robot.getPing(7);
   	if(ping < 18)
   	{
-  		robot.sleep(10000);
+  		robot.sleep(5000);
   		robot.getPing(7);
 
   		if(ping < 18)
@@ -280,7 +288,7 @@ public class Autonomy
   	{continue;}
   }
 
-  void yPing()
+void yPing()
   {
   	robot.getPing(7);
 
@@ -300,13 +308,13 @@ public class Autonomy
   }
 
 
-  void evasiveFunction()
+void evasiveFunction()
   {
   if(currentArea ==1 || currentArea ==3)
   {
-	rightTurn90();
+     rightTurn90();
 
-  	if(compass==1 || compass==34)
+  	if(compass==1 || compass==3)
   	{ yPing; }
   	else if(compass==2 || compass==4)
   	{ xPing; }
@@ -316,7 +324,7 @@ public class Autonomy
   		System.exit(0);
   	}
 
-  move;
+    move;
     leftTurn90();
 
   	if(compass==1 || compass==3)
@@ -334,7 +342,7 @@ public class Autonomy
   {
   leftTurn90();
 
-  	if(compass==1 || compass==34)
+  	if(compass==1 || compass==3)
   	{ yPing; }
   	else if(compass==2 || compass==4)
   	{ xPing; }
@@ -365,37 +373,39 @@ public class Autonomy
   }
 
 
-  void objective1()
+void objective1()
   {
   if(objective1Complete==0)
   {
-  desiredX=rampX;
-  desiredY=rampY;
-  movement;
+   desiredX=rampX;
+   desiredY=rampY;
+   movement;
 
-  <actions required to go up ramp and do all the stuff>
-  <move 2 times in a row to go up ramp>
-  <move 3 times to go down>
+   //actions required to go up ramp and do all the stuff>
+   //move 2 times in a row to go up ramp>
+   //move 3 times to go down>
 
-  objective1Complete+=1;
-  switchArea;
+   objective1Complete+=1;
+   switchArea;
   }
 
   else
   {
-  switchArea;
+   switchArea;
   }
   }
 
-  void objective2()
+void objective2()
   {
-  desiredX=solarX;
-  desiredY=solarY;
-  movement;
-  <rest for 5 seconds>
+    if(solarArea==currentArea)
+     {
+       desiredX=solarX;
+       desiredY=solarY;
+       movement;
+       //rest for 5 seconds
 
-  	if(solarArea==3)
-  	{
+   	if(solarArea==3)
+    	{
   		objective3;
   	}
   	else if(solarArea==1)
@@ -406,16 +416,16 @@ public class Autonomy
   	{
   		switchArea;
   	}
+     }
   }
 
-
-  void objective3()
+void objective3()
   {
   desiredX=soilX;
   desiredY=soilY;
   movement;
 
-  <soil function>
+  //soil function
 
   System.out.println("We did it!");
 
@@ -423,30 +433,30 @@ public class Autonomy
   }
 
 
-  void switchArea;()
+void switchArea;()
   {
-  if(currentArea==1)
-  {
-  desiredY=383.25;
-  desiredX=241.5;
-  movement;
+   if(currentArea==1)
+   {
+   desiredY=23;
+   desiredX=15;
+   movement;
 
-  currentArea=2;
-  }
+   currentArea=2;
+   }
 
-  else if(currentArea==2)
-  {
-  desiredY=292;
-  desiredX=310.5;
-  movement;
+   else if(currentArea==2)
+   {
+   desiredY=15;
+   desiredX=18;
+   movement;
 
-  currentArea=4;
-  }
+   currentArea=4;
+   }
 
   else if(currentArea==3)
   {
-  desiredY=292;
-  desiredX=241.5;
+  desiredY=17;
+  desiredX=9;
   movement;
 
   currentArea=1;
@@ -454,9 +464,9 @@ public class Autonomy
 
   else if(currentArea==4)
   {
-  desiredY=200.75;
-  desiredX=241.5;
-  movemen;
+  desiredY=10;
+  desiredX=12;
+  movement;
 
   currentArea=3;
   }
@@ -467,7 +477,8 @@ public class Autonomy
   exit(0);
   }
   }
-  static void rightTurn90()
+  
+static void rightTurn90()
   {
 	  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
 	  robot.runMotor(RXTXRobot.MOTOR1, 250,0);
@@ -475,9 +486,9 @@ public class Autonomy
 	  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)<215)
 	  {}
 	  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
-
   }
-  static void leftTurn90()
+  
+static void leftTurn90()
   {
 	  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
 	  robot.runMotor(RXTXRobot.MOTOR1, -250,0);
@@ -485,9 +496,9 @@ public class Autonomy
 	  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)>-178)
 	  {}
       robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
-
   }
-  static void forward(int speed, double distance)
+  
+static void forward(int speed, double distance)
   {
 	  int change = 7;
 	  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
@@ -500,7 +511,8 @@ public class Autonomy
 	  }
 	  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
   }
-  static void avoidObject()
+  
+static void avoidObject()
   {
 	  rightTurn90();
 	  forward(150, 24);
