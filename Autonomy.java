@@ -30,7 +30,11 @@ public class Autonomy
   static int compass = 1; //1-North, 2-East, 3-South, 4-West
 
   int objective1Complete=0;
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> origin/master
 public static void main(String args[])
   {
 	robot.setPort("COM3");
@@ -81,7 +85,11 @@ public static void main(String args[])
 	  	System.exit(0);
 	  }
   }
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> origin/master
 void turnRight()
   {
 	  rightTurn90();
@@ -112,13 +120,22 @@ void turnLeft()
   			compass--;
   		}
   }
+<<<<<<< HEAD
 
 
+=======
+
+
+>>>>>>> origin/master
 void move()
   {
   	if(compass==2 || compass==4)
   	{
+<<<<<<< HEAD
   		xPing();
+=======
+  		xPing;
+>>>>>>> origin/master
   		//move function using x
 		//if(currentX==13 || currentX==15)
 		//{ use command to realign itself with the wall }
@@ -141,7 +158,11 @@ void move()
 
   	else if(compass==1 || compass==3)
   	{
+<<<<<<< HEAD
   		yPing();
+=======
+  		yPing
+>>>>>>> origin/master
   		//move function using y
 		//if(currentY==15 || currentY==17)
 		//{ use command to realign itself with the wall }
@@ -182,7 +203,11 @@ void movement()
   		  robot.runMotor(RXTXRobot.MOTOR2, 250, 0);
   		  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)<215)
   		  {}
+<<<<<<< HEAD
   		  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+=======
+  		  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+>>>>>>> origin/master
   	}
   	else if(compass==3)
   	{
@@ -203,7 +228,11 @@ void movement()
 	  robot.runMotor(RXTXRobot.MOTOR2, 250, 0);
 	  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)<215)
 	  {}
+<<<<<<< HEAD
 	  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+=======
+	  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+>>>>>>> origin/master
   	}
   	else if(compass==1)
   	{
@@ -268,8 +297,13 @@ void movement()
   	}
   }
  }
+<<<<<<< HEAD
 
 
+=======
+
+
+>>>>>>> origin/master
 void xPing()
   {
 	robot.getPing(7);
@@ -316,7 +350,11 @@ void evasiveFunction()
      rightTurn90();
 
   	if(compass==1 || compass==3)
+<<<<<<< HEAD
   	{ yPing(); }
+=======
+  	{ yPing; }
+>>>>>>> origin/master
   	else if(compass==2 || compass==4)
   	{ xPing(); }
   	else
@@ -325,7 +363,11 @@ void evasiveFunction()
   		System.exit(0);
   	}
 
+<<<<<<< HEAD
     move();
+=======
+    move;
+>>>>>>> origin/master
     leftTurn90();
 
   	if(compass==1 || compass==3)
@@ -344,7 +386,11 @@ void evasiveFunction()
   leftTurn90();
 
   	if(compass==1 || compass==3)
+<<<<<<< HEAD
   	{ yPing(); }
+=======
+  	{ yPing; }
+>>>>>>> origin/master
   	else if(compass==2 || compass==4)
   	{ xPing(); }
   	else
@@ -380,19 +426,31 @@ void objective1()
   {
    desiredX=rampX;
    desiredY=rampY;
+<<<<<<< HEAD
    movement();
+=======
+   movement;
+>>>>>>> origin/master
 
    //actions required to go up ramp and do all the stuff>
    //move 2 times in a row to go up ramp>
    //move 3 times to go down>
 
    objective1Complete+=1;
+<<<<<<< HEAD
    switchArea();
+=======
+   switchArea;
+>>>>>>> origin/master
   }
 
   else
   {
+<<<<<<< HEAD
    switchArea();
+=======
+   switchArea;
+>>>>>>> origin/master
   }
   }
 
@@ -402,12 +460,20 @@ void objective2()
      {
        desiredX=solarX;
        desiredY=solarY;
+<<<<<<< HEAD
        movement();
+=======
+       movement;
+>>>>>>> origin/master
        //rest for 5 seconds
 
    	if(solarArea==3)
     	{
+<<<<<<< HEAD
   		objective3();
+=======
+  		objective3;
+>>>>>>> origin/master
   	}
   	else if(solarArea==1)
   	{
@@ -434,13 +500,21 @@ void objective3()
   }
 
 
+<<<<<<< HEAD
 void switchArea()
+=======
+void switchArea;()
+>>>>>>> origin/master
   {
    if(currentArea==1)
    {
    desiredY=23;
    desiredX=15;
+<<<<<<< HEAD
    movement();
+=======
+   movement;
+>>>>>>> origin/master
 
    currentArea=2;
    }
@@ -449,7 +523,11 @@ void switchArea()
    {
    desiredY=15;
    desiredX=18;
+<<<<<<< HEAD
    movement();
+=======
+   movement;
+>>>>>>> origin/master
 
    currentArea=4;
    }
@@ -458,7 +536,11 @@ void switchArea()
   {
   desiredY=17;
   desiredX=9;
+<<<<<<< HEAD
   movement();
+=======
+  movement;
+>>>>>>> origin/master
 
   currentArea=1;
   }
@@ -467,7 +549,11 @@ void switchArea()
   {
   desiredY=10;
   desiredX=12;
+<<<<<<< HEAD
   movement();
+=======
+  movement;
+>>>>>>> origin/master
 
   currentArea=3;
   }
@@ -478,7 +564,11 @@ void switchArea()
   System.exit(0);
   }
   }
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> origin/master
 static void rightTurn90()
   {
 	  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
@@ -488,7 +578,11 @@ static void rightTurn90()
 	  {}
 	  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
   }
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> origin/master
 static void leftTurn90()
   {
 	  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
@@ -498,7 +592,11 @@ static void leftTurn90()
 	  {}
       robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
   }
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> origin/master
 static void forward(int speed, double distance)
   {
 	  int change = 7;
@@ -512,7 +610,11 @@ static void forward(int speed, double distance)
 	  }
 	  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
   }
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> origin/master
 static void avoidObject()
   {
 	  rightTurn90();
