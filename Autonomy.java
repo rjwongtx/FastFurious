@@ -314,8 +314,8 @@ void movement()
 void xPing()
   {
   	System.out.println("I am pinging the x axis.");
-	robot.getPing(7);
-  	if(ping < 18)
+	ping=robot.getPing(7);
+  	if(ping < 18 && ping > 0)
   	{
   		System.out.println("I have found something in my sensors.");
   		robot.sleep(5000);
@@ -336,9 +336,9 @@ void xPing()
 void yPing()
   {
   	System.out.println("I am pinging the y axis.");
-  	robot.getPing(7);
+  	ping=robot.getPing(7);
 
-  	if(ping < 19)
+  	if(ping < 19 && ping >0)
   	{
   		System.out.println("I have found something in my sensors.");
   		robot.sleep(5000);
