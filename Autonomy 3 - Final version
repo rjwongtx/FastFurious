@@ -80,7 +80,7 @@ public static void main(String args[])
 void turnRight()
   {
   	System.out.println("I am going to turn right.");
-	  rightTurn90();
+	rightTurn90();
 
   		if(compass == 4)
   		{
@@ -124,8 +124,13 @@ static void move()
   		System.out.println("I should xPing");
   		xPing();
   		forward(250, 17.25);
-  		//if(currentX==13 || currentX==15)
-  			//adjust();
+  		if(currentX==13 || currentX==15)
+		if(currentX==13 && compass==2)
+		{ adjust(); }
+		else if(currentX==15 && compass==4)
+		{ adjust(); }
+		
+		
   		if(compass==2)
   		{
   			currentX+=1;
@@ -149,8 +154,11 @@ static void move()
   		System.out.println("I should yPing");
   		yPing();
   		forward(250, 18.25);
-		//if(currentY==15 || currentY==17)
-			//adjust();
+		if(currentY==15 && compass==1)
+		{ adjust(); }
+		else if(currentY==17 && compass==3)
+		{ adjust(); }
+		
   		if(compass==1)
   		{
   			currentY+=1;
@@ -187,13 +195,7 @@ static void movement()
   	System.out.println("I am higher than where I want to be.");
   	if(compass !=3)
   	{
-  		  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
-  		  robot.runMotor(RXTXRobot.MOTOR1, 250,0);
-  		  robot.runMotor(RXTXRobot.MOTOR2, 250, 0);
-  		  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)<215)
-  		  {}
-  		  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
-  		  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+  		 trunRigth();
   	}
   	else if(compass==3)
   	{
@@ -210,7 +212,7 @@ static void movement()
   	System.out.println("I am lower than where I want to be.");
   	if(compass!=1)
   	{
-  	rightTurn90();
+  		turnRight();
   	}
   	else if(compass==1)
   	{
@@ -232,7 +234,7 @@ static void movement()
   		System.out.println("I am too far right.");
   		if(compass !=4)
   		{
-  		  rightTurn90(); // Stop both motors
+  		  turnRight(); // Stop both motors
   		}
   		else if(compass==4)
   		{
@@ -249,12 +251,7 @@ static void movement()
   		System.out.println("I am too far left.");
   		if(compass!=2)
   		{
-  		  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
-  		  robot.runMotor(RXTXRobot.MOTOR1, 250,0);
-  		  robot.runMotor(RXTXRobot.MOTOR2, 250, 0);
-  		  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)<215)
-  		  {}
-  		  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
+  		  turnLeft();
   		}
   		else if(compass==2)
   		{
@@ -276,19 +273,44 @@ static void movement()
  }
 
 
+static void pingCheck1()
+  {
+	ping1=robot.getPing(7);
+	ping2=robot.getPing(7);
+	
+	if(ping1!=ping2)
+	{
+		return 100;
+	}
+	else
+	{ return ping1; }
+  }
 
+static voic pingCheck2()
+  {
+	ping1=robot.getPing(11);
+	ping2=robot.getPing(11);
+	
+	if(ping1!=ping2)
+	{
+		return 100;
+	}
+	else
+	{ return ping1; }
+  }
 
 static void xPing()
   {
   	System.out.println("I am pinging the x axis.");
-	ping=robot.getPing(7);
-  	if(ping < 18 && ping > 0)
+	int ping1=pingCheck1();
+	int ping2=pingCheck2();
+  	if(ping1 < 18 && ping1 > 0 && ping2 < 18 && ping > 0)
   	{
   		System.out.println("I have found something in my sensors.");
   		robot.sleep(5000);
   		robot.getPing(7);
 
-  		if(ping < 18)
+  		if(ping1 < 18 && ping1 > 0 && ping2 < 18 && ping > 0)
   		{
   			System.out.println("It is still there. I will move.");
   			avoidObject();
@@ -303,14 +325,14 @@ static void xPing()
 static void yPing()
   {
   	System.out.println("I am pinging the y axis.");
-  	ping=robot.getPing(7);
-
-  	if(ping < 19 && ping >0)
+	int ping1=pingCheck1();
+	int ping2=pingCheck2();
+  	if(ping1 < 19 && ping1 > 0 && ping2 < 19 && ping > 0)
   	{
   		System.out.println("I have found something in my sensors.");
   		robot.sleep(5000);
 
-  		if(ping < 19)
+  		if(ping1 < 19 && ping1 > 0 && ping2 < 19 && ping > 0)
   		{
   			System.out.println("It is still there. I will move.");
   			avoidObject();
@@ -328,7 +350,7 @@ static void evasiveFunction()
   System.out.println("Initiating evasive maneuvers.");
   if(currentArea ==1 || currentArea ==3)
   {
-     rightTurn90();
+     turnRight();
 
   	if(compass==1 || compass==3)
   	{ yPing(); }
@@ -341,7 +363,7 @@ static void evasiveFunction()
   	}
 
     move();
-    leftTurn90();
+    turnLeft();
 
   	if(compass==1 || compass==3)
   	{ yPing(); }
@@ -356,7 +378,7 @@ static void evasiveFunction()
 
   else if(currentArea ==2 || currentArea ==4)
   {
-  leftTurn90();
+  turnLeft();
 
   	if(compass==1 || compass==3)
   	{ yPing(); }
@@ -368,7 +390,7 @@ static void evasiveFunction()
   		System.exit(0);
   	}
   move();
-  rightTurn90();
+  turnRight();
 
   	if(compass==1 || compass==3)
   	{ yPing(); }
@@ -478,49 +500,49 @@ static void switchArea()
    if(currentArea==1)
    {
    	System.out.println("I am in Area " + currentArea + " and I will move to Area 2.");
-   desiredY=23;
-   desiredX=15;
-   movement();
+	desiredY=23;
+	desiredX=15;
+	movement();
 
-   currentArea=2;
-   System.out.println("I am now in Area " + currentArea);
-   objective2();
+	currentArea=2;
+	System.out.println("I am now in Area " + currentArea);
+	objective2();
    }
 
    else if(currentArea==2)
    {
    	System.out.println("I am in Area " + currentArea + " and I will move to Area 4.");
-   desiredY=15;
-   desiredX=18;
-   movement();
+   	desiredY=15;
+	desiredX=18;
+	movement();
 
-   currentArea=4;
-   System.out.println("I am now in Area " + currentArea);
-   objective2();
+	currentArea=4;
+	System.out.println("I am now in Area " + currentArea);
+	objective2();
    }
 
   else if(currentArea==3)
   {
   	System.out.println("I am in Area " + currentArea + " and I will move to Area 1.");
-  desiredY=17;
-  desiredX=9;
-  movement();
+  	desiredY=17;
+  	desiredX=9;
+  	movement();
 
-  currentArea=1;
-  System.out.println("I am now in Area " + currentArea);
-  objective2();
+  	currentArea=1;
+  	System.out.println("I am now in Area " + currentArea);
+  	objective2();
   }
 
   else if(currentArea==4)
   {
   	System.out.println("I am in Area " + currentArea + " and I will move to Area 3.");
-  desiredY=10;
-  desiredX=12;
-  movement();
+  	desiredY=10;
+  	desiredX=12;
+  	movement();
 
-  currentArea=3;
-  System.out.println("I am now in Area " + currentArea);
-  objective2();
+  	currentArea=3;
+  	System.out.println("I am now in Area " + currentArea);
+  	objective2();
   }
 
   else
