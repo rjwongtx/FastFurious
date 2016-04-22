@@ -10,6 +10,7 @@ public class Autonomy
   static double ticks_per_inch = 10.3;
 
   //edit these before starting
+  static int fucksgiven=1;
   static int currentX=9;
   static int currentY=21;
   static int solarX=3;
@@ -44,6 +45,11 @@ public static void main(String args[])
 	robot.attachMotor(RXTXRobot.MOTOR2, 4);
 	robot.refreshAnalogPins();
 	robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
+	
+	if(fucksgiven==0)
+	{
+		fuckthis();
+	}
 	  if(currentX<=14 && currentY>=16)
 	  {
 	  	System.out.println("I am in Area 1.");
@@ -794,5 +800,20 @@ public static int getThermistorReading()
 	  }
 	robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
 	robot.sleep(1000);
+ }
+ 
+ fuckthis()
+ {
+ 	robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
+	robot.runMotor(RXTXRobot.MOTOR1, 400,0);
+	robot.runMotor(RXTXRobot.MOTOR2, 400,0);
+
+ 	getTemp()
+ 	getWind()
+ 	getThermistorReading();
+ 	getWindSensorReading();
+ 	getSoil();
+ 	
+ 	robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
  }
 }
