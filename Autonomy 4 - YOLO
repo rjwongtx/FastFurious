@@ -32,7 +32,7 @@ public class Autonomy
 
   //End of editing things.... Good to go.
  
-  static double desiredX;
+  static double desiredX; 
   static double desiredY;
   static double currentArea;
 
