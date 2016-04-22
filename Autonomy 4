@@ -1,0 +1,798 @@
+import rxtxrobot.ArduinoUno;
+import rxtxrobot.RXTXRobot;
+//motor 1 is right side, have to go negative
+//motor 2 is left side, have to go positive 
+//pin five is right
+public class Autonomy
+{
+  static RXTXRobot robot = new ArduinoUno();
+  static int ping = 7;
+  static double ticks_per_inch = 10.3;
+
+  //edit these before starting
+  static int currentX=9;
+  static int currentY=21;
+  static int solarX=3;
+  static int solarY=3;
+  static int solarArea=3;
+  static int compass=3;  //1-North, 2-East, 3-South, 4-West
+  static int objective1Complete=0;
+  static int objective2complete=1;
+  //if start area=1 - X=2,Y=30   Solar - X=25,Y=29
+  //if start area=2 - X=26,Y=30  Solar - X=25,Y=3
+  //if start area=3 - X=2,Y=2    Solar - X=3,Y=29
+  //if start area=4 - X=26,Y=2   Solar - X=3,Y=3
+  
+  static double rampX=9;
+  static double rampY=26;
+  static double soilX=10;
+  static double soilY=12;
+  
+
+  //End of editing things.... Good to go.
+ 
+  static double desiredX;
+  static double desiredY;
+  static double currentArea;
+
+
+public static void main(String args[])
+  {
+	robot.setPort("COM3");
+	robot.connect();
+	robot.attachMotor(RXTXRobot.MOTOR1, 5);
+	robot.attachMotor(RXTXRobot.MOTOR2, 4);
+	robot.refreshAnalogPins();
+	robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
+	  if(currentX<=14 && currentY>=16)
+	  {
+	  	System.out.println("I am in Area 1.");
+	  	currentArea=1;
+	  	System.out.println("I will now go do objective 1: go up the ramp.");
+	  	objective1();
+	  }
+	  else if(currentX>14 && currentY>16)
+	  {
+		currentArea=2;
+	  	System.out.println("I am in Area 2.");
+	  	System.out.println("I will now switch Areas.");
+	  	switchArea();
+	  }
+	  else if(currentX<=14 && currentY<16)
+	  {
+		currentArea=3;
+	  	System.out.println("I am in Area 3.");
+	  	System.out.println("I will now switch Areas.");
+	  	switchArea();
+	  }
+	  else if(currentX>14 && currentY<16)
+	  {
+		  currentArea=4;
+	  	System.out.println("I am in Area 4.");
+	  	System.out.println("I will now switch Areas.");
+	  	switchArea();
+	  }
+	  else
+	  {
+	  	System.out.println("No specified start area!");
+	  	System.exit(0);
+	  }
+  }
+
+
+
+static void turnRight()
+  {
+  	System.out.println("I am going to turn right.");
+	rightTurn90();
+
+  		if(compass == 4)
+  		{
+  			compass=1;
+  			System.out.println("Compass now equals" + compass);
+  		}
+
+  		else
+  		{
+  			compass++;
+  			System.out.println("Compass now equals" + compass);
+  		}
+  }
+
+static void turnLeft()
+  {
+	System.out.println("I am going to turn left.");
+	leftTurn90();
+
+  		if(compass==1)
+  		{
+  			compass=4;
+  			System.out.println("Compass now equals" + compass);
+  		}
+
+  		else
+  		{
+  			compass--;
+  			System.out.println("Compass now equals" + compass);
+  		}
+  }
+
+
+
+
+static void move()
+  {
+  	System.out.println("I am about to move now.");
+  	if(compass==2 || compass==4)
+  	{
+  		System.out.println("I should xPing");
+  		xPing();
+  		forward(480, 17.25);
+  	
+		if(currentX==13 && compass==2)
+		{ System.out.println("I need to adjust"); adjust(); }
+		else if(currentX==15 && compass==4)
+		{ System.out.println("I need to adjust"); adjust(); }
+		
+		
+  		if(compass==2)
+  		{
+  			currentX+=1;
+  			System.out.println("My current position is " + currentX + ", " + currentY);
+  		}
+  		else if(compass==4)
+  		{
+  			currentX-=1;
+  			System.out.println("My current position is " + currentX + ", " + currentY);
+  		}
+  		else
+  		{
+  			System.out.println("How did we even get here? - X-axis editon error.");
+  			System.exit(0);
+  		}
+
+  	}
+
+  	else if(compass==1 || compass==3)
+  	{
+  		System.out.println("I should yPing");
+  		yPing();
+  		forward(480, 18.25);
+		if(currentY==15 && compass==1)
+		{ System.out.println("I need to adjust"); adjust(); }
+		else if(currentY==18 && compass==3)
+		{ System.out.println("I need to adjust"); adjust(); }
+		
+  		if(compass==1)
+  		{
+  			currentY+=1;
+  			System.out.println("My current position is " + currentX + ", " + currentY);
+  		}
+  		else if(compass==3)
+  		{
+  			currentY-=1;
+  			System.out.println("My current position is " + currentX + ", " + currentY);
+  		}
+  		else
+  		{
+  			System.out.println("How did we even get here? - Y-axis edition error.");
+  			System.exit(0);
+  		}
+  	}
+  	else
+  	{
+  		System.out.println("Something went wrong with the compass.");
+  		System.out.println("It currently reads: " + compass);
+  		System.exit(0);
+  	}
+
+  }
+
+static void movement()
+  {
+	for(int i=0; i<1;)
+	{
+  System.out.println("My current position is " + currentX + ", " + currentY);
+  System.out.println("I want to go to " + desiredX + ", " + desiredY);
+  //compare currentLocation y-axis with desiredLocation y-axis> // Y-axis check
+
+  if(currentY > desiredY)
+  {
+  	System.out.println("I am higher than where I want to be.");
+  	if(compass !=3)
+  	{
+  		 turnRight();
+  	}
+  	else if(compass==3)
+  	{
+  		move();
+  	}
+  	else
+  	{
+  		System.out.println("Error regarding currentLocation’s y-axis being higher than the desiredLocation’s y-axis.");
+  		System.exit(0);
+  	}
+  }
+  else if(currentY < desiredY)
+  {
+  	System.out.println("I am lower than where I want to be.");
+  	if(compass!=1)
+  	{
+  		turnRight();
+  	}
+  	else if(compass==1)
+  	{
+  		move();
+  	}
+  else
+  	{
+  		System.out.println("Error regarding currentLocation’s y-axis being lower than the desiredLocation’s y-axis.");
+  		System.exit(0);
+  	}
+
+  }
+
+  else if(currentY == desiredY)
+  {
+  System.out.println("I am at the right height.");
+  if(currentX > desiredX)
+  	{
+  		System.out.println("I am too far right.");
+  		if(compass !=4)
+  		{
+  		  turnRight(); // Stop both motors
+  		}
+  		else if(compass==4)
+  		{
+  			move();
+  		}
+  		else
+  		{
+  			System.out.println("Error regarding currentLocation’s x-axis being higher than the desiredLocation’s x-axis.");
+  			System.exit(0);
+  		}
+  	}
+  	else if(currentX < desiredX)
+  	{
+  		System.out.println("I am too far left.");
+  		if(compass!=2)
+  		{
+  		  turnLeft();
+  		}
+  		else if(compass==2)
+  		{
+  			move();
+  		}
+  else
+  		{
+  			System.out.println("Error regarding currentLocation’s x-axis being lower than the desiredLocation’s x-axis.");
+  			System.exit(0);
+  		}
+  	}
+  	else
+  	{
+  		System.out.println("I am right where I want to be.");
+  		//currentLocation = desiredLocation
+  		i++;
+  	}
+  }
+  }
+ }
+
+
+static int pingCheck1()
+  {
+	int ping1=robot.getPing(7);
+	int ping2=robot.getPing(7);
+	
+	if(ping1!=ping2)
+	{
+		return 100;
+	}
+	else
+	{ return ping1; }
+  }
+
+static int pingCheck2()
+  {
+	int ping1=robot.getPing(11);
+	int ping2=robot.getPing(11);
+	
+	if(ping1!=ping2)
+	{
+		return 100;
+	}
+	else
+	{ return ping1; }
+  }
+
+static void xPing()
+  {
+  	System.out.println("I am pinging the x axis.");
+	int ping1=pingCheck1();
+	int ping2=pingCheck2();
+  	if(ping1 < 20 && ping1 > 0 && ping2 < 20 && ping > 0)
+  	{
+  		System.out.println("I have found something in my sensors.");
+  		robot.sleep(5000);
+  		robot.getPing(7);
+
+  		if(ping1 < 20 && ping1 > 0 && ping2 < 20 && ping > 0)
+  		{
+  			System.out.println("It is still there. I will move.");
+  			evasiveFunction();
+  		}
+  		else
+  		{}
+  	}
+  	else
+  	{}
+  }
+
+static void yPing()
+  {
+  	System.out.println("I am pinging the y axis.");
+	int ping1=pingCheck1();
+	int ping2=pingCheck2();
+  	if(ping1 < 20 && ping1 > 0 && ping2 < 20 && ping > 0)
+  	{
+  		System.out.println("I have found something in my sensors.");
+  		robot.sleep(5000);
+
+  		if(ping1 < 20 && ping1 > 0 && ping2 < 20 && ping > 0)
+  		{
+  			System.out.println("It is still there. I will move.");
+  			evasiveFunction();
+  		}
+  		else
+  		{}
+  	}
+  	else
+  	{}
+  }
+
+
+static void evasiveFunction()
+  {
+  System.out.println("Initiating evasive maneuvers.");
+  if(currentArea ==1 || currentArea ==3)
+  {
+     turnRight();
+
+  	if(compass==1 || compass==3)
+  	{ yPing(); }
+  	else if(compass==2 || compass==4)
+  	{ xPing(); }
+  	else
+  	{
+  		System.out.println("error on compass for evasive function.");
+  		System.exit(0);
+  	}
+
+    move();
+    turnLeft();
+
+  	if(compass==1 || compass==3)
+  	{ yPing(); }
+  	else if(compass==2 || compass==4)
+  	{ xPing(); }
+  	else
+  	{
+  		System.out.println("error on compass for evasive function.");
+  		System.exit(0);
+  	}
+  }
+
+  else if(currentArea ==2 || currentArea ==4)
+  {
+  turnRight();
+
+  	if(compass==1 || compass==3)
+  	{ yPing(); }
+  	else if(compass==2 || compass==4)
+  	{ xPing(); }
+  	else
+  	{
+  		System.out.println("error on compass for evasive function.");
+  		System.exit(0);
+  	}
+  move();
+  turnRight();
+
+  	if(compass==1 || compass==3)
+  	{ yPing(); }
+  	else if(compass==2 || compass==4)
+  	{ xPing(); }
+  	else
+  	{
+  		System.out.println("error on compass for evasive function.");
+  		System.exit(0);
+  	}
+  }
+
+  else
+  {
+  	System.out.println("error on evasive function for currentArea.");
+  	System.exit(0);
+  }
+  }
+
+
+static void objective1()
+  {
+   System.out.println("I have begun objective1.");
+  if(objective1Complete==0)
+  {
+   desiredX=rampX;
+   desiredY=rampY;
+   System.out.println("I am about to move to objective1.");
+   movement();
+   forward(480, 60.5);
+   getTemp();
+   forward(480, 80.75);
+   currentY-=5;
+
+   objective1Complete+=1;
+   System.out.println("I did objective1. I will now switch areas.");
+   switchArea();
+  }
+
+  else
+  {
+  System.out.println("I already did objective1. I will now switch areas.");
+   switchArea()2;
+  }
+  }
+
+static void objective2()
+  {
+  System.out.println("I have begun objective2.");
+  if(objective2complete==0)
+  {
+    if(solarArea==currentArea)
+     {
+       desiredX=solarX;
+       desiredY=solarY;
+       System.out.println("I am about to move to objective2.");
+       movement();
+       robot.sleep(5000);
+    	if(solarArea==3)
+    	{
+      		System.out.println("I shall now begin objective3.");
+  	    	objective3();
+    	}
+    	else if(solarArea==1)
+    	{
+    		System.out.println("I shall now begin objective1.");
+    		objective1();
+    	}
+    	else
+    	{
+  	  	System.out.println("Nothing else to do. I will now switch areas.");
+  	  	switchArea();
+     	}
+     }
+     else
+     {
+       System.out.println("I am in the wrong area.");
+       switchArea();
+     }
+  }
+  else
+  { 
+  	if(currentArea==3)
+  	{
+    	System.out.println("I shall now begin objective3.");
+	    objective3();
+  	}
+  	else if(currentArea==1)
+  	{
+  		System.out.println("I shall now begin objective1.");
+  		objective1();
+  	}
+  	else
+  	{
+	  	System.out.println("Nothing else to do. I will now switch areas.");
+	  	switchArea();
+   	} 
+  }
+  }
+  
+  
+
+static void objective3()
+  {
+  if(objective1Complete==1)
+  {
+  System.out.println("I have begun objective3.");
+  desiredX=soilX;
+  desiredY=soilY;
+  System.out.println("I am about to move to objective3.");
+  movement();
+  goUntilBump();
+  getSoil();
+  System.out.println("We did it!");
+
+  System.exit(0);
+  }
+  else
+  {
+   System.out.println("I have not gone up the ramp yet... Let me do that first.");
+   switchArea();
+  }
+  }
+  
+
+
+static void switchArea()
+  {
+  System.out.println("I have begun switching areas.");
+   if(currentArea==1)
+   {
+   	System.out.println("I am in Area " + currentArea + " and I will move to Area 2.");
+	desiredY=23;
+	desiredX=15;
+	movement();
+
+	currentArea=2;
+	System.out.println("I am now in Area " + currentArea);
+	objective2();
+   }
+
+   else if(currentArea==2)
+   {
+   	System.out.println("I am in Area " + currentArea + " and I will move to Area 4.");
+   	desiredY=15;
+	desiredX=18;
+	movement();
+
+	currentArea=4;
+	System.out.println("I am now in Area " + currentArea);
+	objective2();
+   }
+
+  else if(currentArea==3)
+  {
+  	System.out.println("I am in Area " + currentArea + " and I will move to Area 1.");
+  	desiredY=17;
+  	desiredX=9;
+  	movement();
+
+  	currentArea=1;
+  	System.out.println("I am now in Area " + currentArea);
+  	objective2();
+  }
+
+  else if(currentArea==4)
+  {
+  	System.out.println("I am in Area " + currentArea + " and I will move to Area 3.");
+  	desiredY=10;
+  	desiredX=12;
+  	movement();
+
+  	currentArea=3;
+  	System.out.println("I am now in Area " + currentArea);
+  	objective2();
+  }
+
+  else
+  {
+  System.out.println("switchArea function isn’t working for some reason.");
+  System.out.println("current area reads " + currentArea);
+  System.exit(0);
+  }
+  }
+
+static void switchArea2()
+{
+	System.out.println("I have begun switching areas to go to the soil.");
+	   if(currentArea==1)
+	   {
+	   	System.out.println("I am in Area " + currentArea + " and I will move to Area 3.");
+	  	desiredY=17;
+	  	desiredX=9;
+	  	movement();
+
+		currentArea=2;
+		System.out.println("I am now in Area " + currentArea);
+		objective3();
+	   }
+}
+
+
+static void rightTurn90()
+{
+	  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
+	  robot.runMotor(RXTXRobot.MOTOR1, 400,0);
+	  robot.runMotor(RXTXRobot.MOTOR2, 400,0);
+	  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)<170)
+	  {}
+	  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors 
+
+}
+static void leftTurn90()
+{
+	  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
+	  robot.runMotor(RXTXRobot.MOTOR1, -400,0);
+	  robot.runMotor(RXTXRobot.MOTOR2, -400, 0);
+	  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)>-170)
+	  {}
+    robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors 
+	  
+}
+
+static void avoidObject()
+  {
+	  rightTurn90();
+	  forward(150, 24);
+	  leftTurn90();
+	  forward(150,24);
+	  leftTurn90();
+	  forward(150,24);
+	  rightTurn90();
+	  forward(150, 48);
+  }
+static void forward(int speed, double distance)
+{
+	  int change = 7;
+	  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
+	  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR2);
+	  robot.runMotor(RXTXRobot.MOTOR1, -speed-20,0);
+	  robot.runMotor(RXTXRobot.MOTOR2, speed-60,0);
+	 // robot.runMotor(RXTXRobot.MOTOR2, (int)(speed*.982),0);
+	  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)>-(distance*ticks_per_inch) && robot.getEncodedMotorPosition(RXTXRobot.MOTOR2)<(distance*ticks_per_inch))
+	  {
+		System.out.println("");
+	  }
+	  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
+}
+static void adjust()
+{
+	  int rPing = 11;
+	  int lPing = 7;
+while(robot.getPing(rPing)!=robot.getPing(lPing))
+	{
+	  if (robot.getPing(rPing)>robot.getPing(lPing))
+	  	{
+
+		  double x =robot.getPing(rPing)-robot.getPing(lPing);//10.3
+		 // robot.runMotor(RXTXRobot.MOTOR1, -250, 0);
+		  robot.runMotor(RXTXRobot.MOTOR1, -250, 0);
+		  System.out.println("Right: I have to go this many cm: " + x);
+		  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR2)<(5.1*x))
+		  {
+			  if(robot.getEncodedMotorPosition(RXTXRobot.MOTOR2)<0)
+				  break;
+			  System.out.println(robot.getEncodedMotorPosition(RXTXRobot.MOTOR2));
+			//  System.out.println("Right ping is: "+robot.getPing(rPing));
+			  //System.out.println("Left ping is: "+robot.getPing(lPing));
+		  }
+		  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
+		  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
+		  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR2);
+		  System.out.println("I am going to stop the motors for the right");
+		  System.out.println("The motors have stopped moving for the right");
+
+	  	}
+	  else if(robot.getPing(lPing)>robot.getPing(rPing))
+	  	{
+		  double y = robot.getPing(lPing)-robot.getPing(rPing);
+		  robot.runMotor(RXTXRobot.MOTOR2, 250, 0);
+		//  robot.runMotor(RXTXRobot.MOTOR2, 250, 0);
+		  System.out.println("Left: I have to go this many cm: " + y);
+		  while(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1)>(y*5.13))
+		  {
+			  System.out.println(robot.getEncodedMotorPosition(RXTXRobot.MOTOR1));
+			//  System.out.println("Right ping is: "+robot.getPing(rPing));
+			  //System.out.println("Left ping is: "+robot.getPing(lPing));
+		  }
+		  robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
+		  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR1);
+		  robot.resetEncodedMotorPosition(RXTXRobot.MOTOR2);
+	  	}
+	  else
+		  break;
+	}
+System.out.println("I am going to stop the motors");
+System.out.println("The motors have stopped moving");
+robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0); // Stop both motors
+
+}
+static void getTemp()
+	{
+    robot.attachMotor(RXTXRobot.MOTOR3, 10); 
+  robot.runMotor(RXTXRobot.MOTOR3, 500, 20000);
+  int thermistorReading = getThermistorReading();
+  //Print the results
+  System.out.println("The probe read the value: " + thermistorReading);
+  System.out.println("In volts: " + (thermistorReading * (5.0/1023.0)));
+  //double temperature = (thermistorReading-809.05)/-8.5458;
+  double temperature = thermistorReading*(-0.0725)+63.624;
+  //double windTemp = -0.1176*thermistorReading + 93.588;
+  System.out.println("The temperature is: " + temperature);
+  getWind();
+  robot.sleep(10000);
+	}
+static void getWind()
+{
+int windSensorReading = getWindSensorReading();
+int temperatureReading = getThermistorReading();
+//System.out.println("The windSensor read the value: " + windSensorReading);
+//System.out.println("The Temperature read the value: " + temperatureReading);
+double windTemp = -0.1176*windSensorReading + 93.588;
+double temperature = temperatureReading*(-0.0725)+63.624;
+//System.out.println("The windSensor read the value: " + windTemp);
+//System.out.println("The Temperature read the value: " + temperature);
+double difference = temperature-windTemp;
+double windspeed = 0.7844*difference-0.4656;
+if (windspeed<0)
+	System.out.println("The wind speed: 0");
+else
+	System.out.println("The wind speed: " + windspeed);
+}
+public static int getThermistorReading()
+	{
+	 int sum = 0;
+	 int readingCount = 20;
+
+	 //Read the analog pin values ten times, adding to sum each time
+	 for (int i = 0; i < readingCount; i++) {
+
+	 //Refresh the analog pins so we get new readings
+	 robot.refreshAnalogPins();
+	 int reading = robot.getAnalogPin(0).getValue();
+	 sum += reading;
+	 }
+
+	 //Return the average reading
+	 return sum / readingCount;
+	 }
+ public static int getWindSensorReading()
+	{
+	 int sum = 0;
+	 int readingCount = 10;
+
+	 //Read the analog pin values ten times, adding to sum each time
+	 for (int i = 0; i < readingCount; i++) {
+
+	 //Refresh the analog pins so we get new readings
+	 robot.refreshAnalogPins();
+	 int reading = robot.getAnalogPin(1).getValue();
+	 sum += reading;
+	 }
+
+	 //Return the average reading
+	 return sum / readingCount;
+	}
+ static void getSoil()
+ {
+	  robot.attachServo(RXTXRobot.SERVO2, 8);//conductivity
+	  robot.moveServo(RXTXRobot.SERVO2, 180);
+	  System.out.println("ADC Code: "+robot.getConductivity());
+	  int reading = robot.getConductivity();
+	  double content = (reading-1000.2)/(-1.6488);
+	  //int moistureContent = (int)(content*1000);
+	  //double result = moistureContent/1000;
+	  if(reading>=1000)
+		  System.out.println("Moisture content is: 0%");
+	  else
+		  System.out.println("Moisture content is: " + content+ "%");
+	  robot.sleep(2000);
+	  robot.moveServo(RXTXRobot.SERVO2, 85);
+	  robot.sleep(3500);
+ }
+ static void goUntilBump()
+ {
+	robot.refreshAnalogPins();
+	int bump = robot.getAnalogPin(2).getValue();
+	while (bump>800)
+	  {
+	   robot.runMotor(RXTXRobot.MOTOR1, -300, RXTXRobot.MOTOR2, 300, 0);
+	   bump = robot.getAnalogPin(2).getValue();
+	   System.out.println(bump);
+	   robot.refreshAnalogPins();
+	  }
+	robot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+	robot.sleep(1000);
+ }
+}
