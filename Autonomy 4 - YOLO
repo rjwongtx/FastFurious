@@ -317,13 +317,13 @@ static void xPing()
   	System.out.println("I am pinging the x axis.");
 	int ping1=pingCheck1();
 	int ping2=pingCheck2();
-  	if(ping1 < 20 && ping1 > 0 && ping2 < 20 && ping > 0)
+  	if(ping1 < 48 && ping1 > 0 && ping2 < 48 && ping > 0)
   	{
   		System.out.println("I have found something in my sensors.");
   		robot.sleep(5000);
   		robot.getPing(7);
 
-  		if(ping1 < 20 && ping1 > 0 && ping2 < 20 && ping > 0)
+  		if(ping1 < 48 && ping1 > 0 && ping2 < 48 && ping > 0)
   		{
   			System.out.println("It is still there. I will move.");
   			evasiveFunction();
@@ -340,12 +340,12 @@ static void yPing()
   	System.out.println("I am pinging the y axis.");
 	int ping1=pingCheck1();
 	int ping2=pingCheck2();
-  	if(ping1 < 20 && ping1 > 0 && ping2 < 20 && ping > 0)
+  	if(ping1 < 48 && ping1 > 0 && ping2 < 48 && ping > 0)
   	{
   		System.out.println("I have found something in my sensors.");
   		robot.sleep(5000);
 
-  		if(ping1 < 20 && ping1 > 0 && ping2 < 20 && ping > 0)
+  		if(ping1 < 48 && ping1 > 0 && ping2 < 48 && ping > 0)
   		{
   			System.out.println("It is still there. I will move.");
   			evasiveFunction();
